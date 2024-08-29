@@ -12,7 +12,7 @@ import Reservation from "@/components/layouts/reservation";
 import ServicesSection from "@/components/layouts/services";
 
 
-import Image from "next/image";
+
 
 export default function Home() {
   return (
