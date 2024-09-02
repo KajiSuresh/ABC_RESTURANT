@@ -1,39 +1,35 @@
 "use client"
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button"
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table"
-import {  Trash2 } from "lucide-react"
+import { Trash2 } from "lucide-react"
+import { Contact, contactService } from '@/action/contactus';
 
 
-const contacts = [
-  {
-    id: "CONTACT001",
-    name: "John Smith",
-    email: "john.smith@example.com",
-    message: "Inquiry about dinner reservations",
-  },
-  {
-    id: "CONTACT002",
-    name: "Jane Doe",
-    email: "jane.doe@example.com",
-    message: "Feedback on recent visit",
+export default function ContactDashboard() {
+  const [contacts, setContacts] = useState<Contact[]>([]);
 
-  },
+  useEffect(() => {
+    fetchContacts();
+  }, []);
 
-  // Add more contacts as needed
-]
+  const fetchContacts = async () => {
+    try {
+      const fetchedContacts = await contactService.getContacts();
+      setContacts(fetchedContacts);
+    } catch (error) {
+      console.error("Failed to fetch contacts:", error);
+    }
+  };
 
-export default function Contact() {
-  const handleEdit = (id: string) => {
-    console.log(`Edit contact ${id}`);
-    // Implement edit functionality
+  const handleDelete = async (id: string) => {
+    try {
+      await contactService.deleteContact(id);
+      fetchContacts(); // Refresh the list after deletion
+    } catch (error) {
+      console.error(`Failed to delete contact ${id}:`, error);
+    }
   }
-
-  const handleDelete = (id: string) => {
-    console.log(`Delete contact ${id}`);
-    // Implement delete functionality
-  }
-
 
   return (
     <div className="w-full p-6">
@@ -46,18 +42,17 @@ export default function Contact() {
             <TableRow>
               <TableHead>Name</TableHead>
               <TableHead>Email</TableHead>
-               <TableHead>Message</TableHead>
-                <TableHead>Actions</TableHead>
+              <TableHead>Message</TableHead>
+              <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {contacts.map((contact) => (
               <TableRow key={contact.id}>
-                <TableCell className="font-medium">{contact.name}</TableCell>
+                <TableCell className="font-medium">{contact.customerName}</TableCell>
                 <TableCell>{contact.email}</TableCell>
                 <TableCell>{contact.message}</TableCell>
                 <TableCell>
-                
                   <Button variant="outline" size="icon" onClick={() => handleDelete(contact.id)}>
                     <Trash2 className="h-4 w-4" />
                   </Button>

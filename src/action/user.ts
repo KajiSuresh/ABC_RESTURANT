@@ -1,21 +1,73 @@
-"use server"
-import prisma from "@/lib/db_client";
+// file: src/services/user.ts
 
-
-async function getUser (){
-    return await prisma.user.findMany()
-}
-
-async function createUser (user: { name: string; email: string; password: string; phoneNo: string }){
-    return await prisma.user.create({data:user})
-}
-
-async function deleteUser (id:string){
-    return await prisma.user.delete({where:{id}})
-}
-
-async function updateUser (id:string,email:string){
-    return await prisma.user.update({data:{email:email},where:{id:id}})
-}
-
-export {createUser, getUser, updateUser}
+export interface UserData {
+    email: string;
+    password?: string;
+    phoneNo?: string;
+    name?: string;
+  }
+  
+  export interface User extends UserData {
+    id: string;
+    createdAt: Date;
+    updatedAt: Date;
+  }
+  
+  export const userService = {
+    async getUsers(): Promise<User[]> {
+      const response = await fetch('/api/user');
+      if (!response.ok) {
+        throw new Error('Failed to fetch users');
+      }
+      const data = await response.json();
+      return data.users;
+    },
+  
+    async createUser(userData: UserData): Promise<User> {
+      const response = await fetch('/api/user', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userData),
+      });
+      if (!response.ok) {
+        throw new Error('Failed to create user');
+      }
+      const data = await response.json();
+      return data.user;
+    },
+  
+    async deleteUser(id: string): Promise<void> {
+      const response = await fetch(`/api/user?id=${id}`, {
+        method: 'DELETE',
+      });
+      if (!response.ok) {
+        throw new Error('Failed to delete user');
+      }
+    },
+  
+    async updateUser(id: string, userData: Partial<UserData>): Promise<User> {
+      const response = await fetch(`/api/user?id=${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userData),
+      });
+      if (!response.ok) {
+        throw new Error('Failed to update user');
+      }
+      const data = await response.json();
+      return data.user;
+    },
+  
+    async getUserById(id: string): Promise<User> {
+      const response = await fetch(`/api/user/${id}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch user');
+      }
+      const data = await response.json();
+      return data.user;
+    },
+  };

@@ -1,32 +1,36 @@
 "use client"
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button"
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table"
-import { Pencil, Trash2 } from "lucide-react"
-import AddDining from "./model/add_dinning"
-import EditDinning from './model/edit_dinning';
+import { Trash2 } from "lucide-react"
 import Image from 'next/image';
+ // Adjust this import path as needed
+import AddDining from "./model/add_dinning"
+import { DiningTable, diningTableService } from '@/action/dinning';
 
-const diningTables = [
-  {
-    id: "",
-    tableName: "lough",
-    image:""
-    
-  },
-  
-  // Add more dining tables as needed
-]
+export default function DiningDashboard() {
+  const [diningTables, setDiningTables] = useState<DiningTable[]>([]);
 
-export default function Dining() {
-  const handleEdit = (id: string) => {
-    console.log(`Edit table ${id}`);
-    // Implement edit functionality
-  }
+  useEffect(() => {
+    fetchDiningTables();
+  }, []);
 
-  const handleDelete = (id: string) => {
-    console.log(`Delete table ${id}`);
-    // Implement delete functionality
+  const fetchDiningTables = async () => {
+    try {
+      const fetchedDiningTables = await diningTableService.getDiningTables();
+      setDiningTables(fetchedDiningTables);
+    } catch (error) {
+      console.error("Failed to fetch dining tables:", error);
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    try {
+      await diningTableService.deleteDiningTable(id);
+      fetchDiningTables(); // Refresh the list after deletion
+    } catch (error) {
+      console.error(`Failed to delete dining table ${id}:`, error);
+    }
   }
 
   return (
@@ -34,7 +38,7 @@ export default function Dining() {
       <div className="flex justify-between items-center">
         <div className="flex-shrink-0 text-[25px] font-semibold p-2">Dining Tables</div>
         <div className="flex justify-end mb-4 flex-shrink-0">
-          <AddDining/>
+          <AddDining onAdd={fetchDiningTables} />
         </div>
       </div>
       <div className="border rounded-lg overflow-hidden">
@@ -47,22 +51,20 @@ export default function Dining() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {diningTables.map((dinning) => (
-              <TableRow key={dinning.id}>
-                <TableCell className="font-medium">{dinning.tableName}</TableCell>
+            {diningTables.map((diningTable) => (
+              <TableRow key={diningTable.id}>
+                <TableCell className="font-medium">{diningTable.diningName}</TableCell>
                 <TableCell>
-                <Image
-                  src="/placeholder.svg"
-                  width={64}
-                  height={64}
-                  alt="Product Image"
-                  className="aspect-square rounded-md object-cover"
-                />
-                  {dinning.image}</TableCell>
-                
+                  <Image
+                    src={diningTable.diningImage || "/placeholder.svg"}
+                    width={64}
+                    height={64}
+                    alt="Dining Table Image"
+                    className="aspect-square rounded-md object-cover"
+                  />
+                </TableCell>
                 <TableCell>
-                 <EditDinning/>
-                  <Button variant="outline" size="icon" onClick={() => handleDelete(dinning.id)}>
+                  <Button variant="outline" size="icon" onClick={() => handleDelete(diningTable.id)}>
                     <Trash2 className="h-4 w-4" />
                   </Button>
                 </TableCell>
