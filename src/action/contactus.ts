@@ -14,13 +14,18 @@ export interface Contact extends ContactData {
 
 export const contactService = {
   async getContacts(): Promise<Contact[]> {
+  try {
     const response = await fetch('/api/contactservice');
     if (!response.ok) {
       throw new Error('Failed to fetch contacts');
     }
     const data = await response.json();
     return data.contacts;
-  },
+  } catch (error) {
+    console.error('Error fetching contacts:', error);
+    return [];
+  }
+},
 
   async createContact(contactData: ContactData): Promise<Contact> {
     const response = await fetch('/api/contactservice', {
