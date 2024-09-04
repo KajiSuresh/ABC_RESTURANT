@@ -6,8 +6,7 @@ import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { diningTableService } from '@/action/dinning';
 
-
-export default function AddDining() {
+export default function AddDining({ onAdd }: { onAdd: () => Promise<void> }) {
   const [name, setName] = useState('');
   const [image, setImage] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -37,6 +36,8 @@ export default function AddDining() {
       // Reset form
       setName('');
       setImage(null);
+      // Call onAdd after successful submission
+      await onAdd();
       // TODO: Close the dialog and possibly refresh the list of dining tables
     } catch (error) {
       console.error('Failed to create dining table:', error);

@@ -11,7 +11,7 @@ interface AddServiceProps {
   onServiceAdded: () => Promise<void>;
 }
 
-export default function AddService() {
+export default function AddService({ onServiceAdded }: AddServiceProps) {
   const [serviceName, setServiceName] = useState('');
   const [image, setImage] = useState<File | null>(null);
   const [description, setDescription] = useState('');
