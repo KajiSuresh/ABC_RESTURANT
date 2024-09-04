@@ -10,8 +10,8 @@ interface User extends UserData {
 }
 
 class LoginManager {
-  private readonly ADMIN_EMAIL = "admin@example.com";
-  private readonly ADMIN_PASSWORD = "adminpassword";
+  private readonly ADMIN_EMAIL = "admin@gmail.com";
+  private readonly ADMIN_PASSWORD = "admin";
 
   constructor(private router: any) {}
 
@@ -26,7 +26,8 @@ class LoginManager {
       });
       console.log('User created successfully:', newUser);
       toast.success('Account created successfully!');
-      // this.router.push('/dashboard');
+
+      this.router.push('/');
     } catch (error) {
       console.error('Error creating user:', error);
       toast.error('Error creating account. Please try again.');
@@ -34,16 +35,45 @@ class LoginManager {
     }
   }
 
-  public async signIn(email: string, password: string): Promise<void> {
-    console.log('Signing in:', { email, password });
+//   public async signIn(email: string, password: string): Promise<void> {
+//     console.log('Signing in:', { email, password });
     
-    if (this.isAdminLogin(email, password)) {
-      console.log('Admin logged in successfully');
-      this.router.push('/dashboard');
-    } else {
-      await this.regularUserLogin(email, password);
-    }
+//     if (this.isAdminLogin(email, password)) {
+//       const token = "mocked-token-from-backend"; 
+//       // Save the token to local storage
+//       localStorage.setItem('authToken', token);
+//       // Save the token to cookies
+// // Save the token to cookies
+// this.setCookie('authToken', token, 7);
+//       // console.log('Admin logged in successfully');
+//       this.router.push('/dashboard');
+//     } else {
+//       await this.regularUserLogin(email, password);
+//     }
+//   }
+
+public async signIn(email: string, password: string): Promise<void> {
+  console.log('Signing in:', { email, password });
+
+  if (this.isAdminLogin(email, password)) {
+    const token = "mocked-token-from-backend"; 
+    localStorage.setItem('authToken', token); // Set in local storage
+    this.setCookie('authToken', token, 7); // Set in cookies
+    this.router.push('/dashboard');
+  } else {
+    await this.regularUserLogin(email, password);
   }
+}
+
+  // Helper function to set a cookie
+private setCookie(name: string, value: string, days: number): void {
+  const date = new Date();
+  date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+  const expires = `expires=${date.toUTCString()}`;
+  document.cookie = `${name}=${value}; ${expires}; path=/`;
+}
+
+
 
   private isAdminLogin(email: string, password: string): boolean {
     return email === this.ADMIN_EMAIL && password === this.ADMIN_PASSWORD;
@@ -60,6 +90,13 @@ class LoginManager {
       }
 
       console.log('User logged in successfully:', user);
+      
+      // Simulate a token for the purpose of this example
+      const token = "mocked-token-from-backend";
+      
+      // Save the token to local storage
+      localStorage.setItem('authToken', token);
+
       toast.success('Logged in successfully!');
       this.router.push('/dashboard');
     } catch (error) {
