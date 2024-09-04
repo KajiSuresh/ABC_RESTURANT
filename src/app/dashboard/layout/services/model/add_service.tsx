@@ -13,7 +13,7 @@ interface AddServiceProps {
 
 export default function AddService() {
   const [serviceName, setServiceName] = useState('');
-  const [serviceImage, setServiceImage] = useState('');
+  const [image, setImage] = useState<File | null>(null);
   const [description, setDescription] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
@@ -24,16 +24,25 @@ export default function AddService() {
     setIsSubmitting(true);
     setError('');
 
+  if (!image) {
+      setError('Please fill in all fields');
+      setIsSubmitting(false);
+      return;
+    }
+
     try {
-      await serviceTypeService.createServiceType({
-        serviceName,
-        serviceImage,
-        description
-      });
+      const base64Image = await convertToBase64(image);
+
+      const newService = await serviceTypeService.createServiceType({
+        serviceName:serviceName,
+        serviceImage:base64Image,
+        description:description,
+
+      })
       
       // Reset form and close dialog on success
       setServiceName('');
-      setServiceImage('');
+      setImage(null);
       setDescription('');
       setIsOpen(false);
     } catch (err) {
@@ -44,15 +53,15 @@ export default function AddService() {
     }
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      // Here you would typically upload the file to your server or a file hosting service
-      // and then set the returned URL as the serviceImage.
-      // For this example, we'll just set the file name.
-      setServiceImage(file.name);
-    }
+  const convertToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = error => reject(error);
+    });
   };
+
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -80,7 +89,7 @@ export default function AddService() {
               <Input 
                 id="image" 
                 type="file" 
-                onChange={handleFileChange}
+                onChange={(e) => setImage(e.target.files?.[0] || null)}
                 required
               />
             </div>

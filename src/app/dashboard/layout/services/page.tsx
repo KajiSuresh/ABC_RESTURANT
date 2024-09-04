@@ -6,6 +6,7 @@ import { Trash2 } from "lucide-react"
 import AddService from "./model/add_service"
 import EditService from './model/edit_service';
 import { ServiceType, serviceTypeService } from '@/action/service'; // Adjust the import path as needed
+import Image from 'next/image';
 
 export default function Service() {
   const [services, setServices] = useState<ServiceType[]>([]);
@@ -61,7 +62,7 @@ export default function Service() {
                 <TableCell className="font-medium">{service.serviceName}</TableCell>
                 <TableCell>{service.description}</TableCell>
                 <TableCell>
-                  <img
+                  <Image
                     src={service.serviceImage || "/placeholder.svg"}
                     width={64}
                     height={64}
