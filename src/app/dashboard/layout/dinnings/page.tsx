@@ -7,6 +7,7 @@ import Image from 'next/image';
  // Adjust this import path as needed
 import AddDining from "./model/add_dinning"
 import { DiningTable, diningTableService } from '@/action/dinning';
+import EditDinning from './model/edit_dinning';
 
 export default function DiningDashboard() {
   const [diningTables, setDiningTables] = useState<DiningTable[]>([]);
@@ -64,6 +65,7 @@ export default function DiningDashboard() {
                   />
                 </TableCell>
                 <TableCell>
+                  <EditDinning dinning={diningTable} onDinningUpdated={fetchDiningTables}/>
                   <Button variant="outline" size="icon" onClick={() => handleDelete(diningTable.id)}>
                     <Trash2 className="h-4 w-4" />
                   </Button>

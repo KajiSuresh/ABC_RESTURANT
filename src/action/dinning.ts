@@ -46,6 +46,7 @@ export const diningTableService = {
   },
 
   async updateDiningTable(id: string, diningTableData: Partial<DiningTableData>): Promise<DiningTable> {
+    console.log('Sending update request:', { id, diningTableData });
     const response = await fetch(`/api/dinning?id=${id}`, {
       method: 'PUT',
       headers: {
@@ -54,7 +55,8 @@ export const diningTableService = {
       body: JSON.stringify(diningTableData),
     });
     if (!response.ok) {
-      throw new Error('Failed to update dining table');
+      const errorData = await response.json();
+      throw new Error(`Failed to update dining table: ${errorData.error || response.statusText}`);
     }
     const data = await response.json();
     return data.diningTable;

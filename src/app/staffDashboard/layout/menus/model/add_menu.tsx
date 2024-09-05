@@ -1,42 +1,115 @@
-
-import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from "@/components/ui/dialog"
+import React, { useState } from 'react';
+import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
-import { Plus, XIcon } from "lucide-react"
+import { Plus } from "lucide-react"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
+import { menuService } from '@/action/menu';
 
-export default function AddMenu() {
+
+export default function AddMenu({ onAdd }: { onAdd: () => void }) {
+  const [name, setName] = useState('');
+  const [price, setPrice] = useState('');
+  const [category, setCategory] = useState('');
+  const [description, setDescription] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState('');
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setError('');
+
+    if (!name || !price || !category) {
+      setError('Please fill in all required fields');
+      setIsSubmitting(false);
+      return;
+    }
+
+    try {
+      const newMenuItem = await menuService.createMenuItem({
+        name,
+        price: parseFloat(price),
+        category,
+        description,
+      });
+
+      console.log('New menu item created:', newMenuItem);
+      // Reset form
+      setName('');
+      setPrice('');
+      setCategory('');
+      setDescription('');
+      setIsOpen(false);
+      onAdd(); // Refresh the menu items list
+    } catch (error) {
+      console.error('Failed to create menu item:', error);
+      setError('Failed to create menu item. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-      <Button className="gap-2"> <Plus /> Add Menu</Button> 
+        <Button className="gap-2" onClick={() => setIsOpen(true)}><Plus /> Add Menu</Button> 
       </DialogTrigger>
       <DialogContent className="sm:max-w-[700px]">
         <DialogHeader>
           <DialogTitle>Add New Menu</DialogTitle>
         </DialogHeader>
-        <form className="space-y-4 py-6">
+        <form className="space-y-4 py-6" onSubmit={handleSubmit}>
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="name">Name</Label>
-              <Input id="name" placeholder="Enter name" />
+              <Input 
+                id="name" 
+                placeholder="Enter name" 
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+              />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="email">Price</Label>
-              <Input id="email" type="text" placeholder="Enter Price" />
+              <Label htmlFor="price">Price</Label>
+              <Input 
+                id="price" 
+                type="number" 
+                step="0.01" 
+                placeholder="Enter Price" 
+                value={price}
+                onChange={(e) => setPrice(e.target.value)}
+                required
+              />
             </div>
           </div>
           <div className="space-y-2">
-              <Label htmlFor="email">Category</Label>
-              <Input id="email" type="text" placeholder="Enter Category" />
-            </div>
-          <div className="space-y-2">
-            <Label htmlFor="message">Discribtion</Label>
-            <Textarea id="message" placeholder="Enter Discribtion" className="min-h-[100px]" />
+            <Label htmlFor="category">Category</Label>
+            <Input 
+              id="category" 
+              type="text" 
+              placeholder="Enter Category" 
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              required
+            />
           </div>
-          <Button type="submit" className="w-full">
-            Submit
+          <div className="space-y-2">
+            <Label htmlFor="description">Description</Label>
+            <Textarea 
+              id="description" 
+              placeholder="Enter Description" 
+              className="min-h-[100px]" 
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+            />
+          </div>
+          {error && <p className="text-red-500">{error}</p>}
+          <Button type="submit" className="w-full" disabled={isSubmitting}>
+            {isSubmitting ? 'Submitting...' : 'Submit'}
           </Button>
         </form>
       </DialogContent>

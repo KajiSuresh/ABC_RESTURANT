@@ -1,43 +1,116 @@
+import React, { useState } from 'react';
+import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { serviceTypeService } from '@/action/service';
 
-import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
-import { Plus, XIcon } from "lucide-react"
-import { Label } from "@/components/ui/label"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
+interface AddServiceProps {
+  onServiceAdded: () => Promise<void>;
+}
 
-export default function AddService() {
+export default function AddService({ onServiceAdded }: AddServiceProps) {
+  const [serviceName, setServiceName] = useState('');
+  const [image, setImage] = useState<File | null>(null);
+  const [description, setDescription] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState('');
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setError('');
+
+  if (!image) {
+      setError('Please fill in all fields');
+      setIsSubmitting(false);
+      return;
+    }
+
+    try {
+      const base64Image = await convertToBase64(image);
+
+      const newService = await serviceTypeService.createServiceType({
+        serviceName:serviceName,
+        serviceImage:base64Image,
+        description:description,
+
+      })
+      
+      // Reset form and close dialog on success
+      setServiceName('');
+      setImage(null);
+      setDescription('');
+      setIsOpen(false);
+    } catch (err) {
+      setError('Failed to create service. Please try again.');
+      console.error(err);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const convertToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = error => reject(error);
+    });
+  };
+
+
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button className="gap-2"> <Plus /> Add Services</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[700px]">
         <DialogHeader>
-          <DialogTitle>Contact Us</DialogTitle>
+          <DialogTitle>Add New Service</DialogTitle>
         </DialogHeader>
-        <form className="space-y-4 py-6">
+        <form className="space-y-4 py-6" onSubmit={handleSubmit}>
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="name">Name</Label>
-              <Input id="name" placeholder="Enter Service name" />
+              <Input 
+                id="name" 
+                placeholder="Enter Service name" 
+                value={serviceName}
+                onChange={(e) => setServiceName(e.target.value)}
+                required
+              />
             </div>
             <div className="space-y-2">
-
               <Label htmlFor="image">Image</Label>
-              <Input id="image" type="file" />
-
+              <Input 
+                id="image" 
+                type="file" 
+                onChange={(e) => setImage(e.target.files?.[0] || null)}
+                required
+              />
             </div>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="message">Discribtion</Label>
-            <Textarea id="message" placeholder="Enter Discribtion" className="min-h-[100px]" />
+            <Label htmlFor="description">Description</Label>
+            <Textarea 
+              id="description" 
+              placeholder="Enter Description" 
+              className="min-h-[100px]"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              required
+            />
           </div>
-          <Button type="submit" className="w-full">
-            Submit
+          {error && <p className="text-red-500">{error}</p>}
+          <Button type="submit" className="w-full" disabled={isSubmitting}>
+            {isSubmitting ? 'Submitting...' : 'Submit'}
           </Button>
         </form>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

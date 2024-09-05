@@ -67,7 +67,7 @@ const Reservation: React.FC = () => {
   }
 
   return (
-    <div className="bg-gray-100">
+    <div className="bg-gray-100" id='reservation'>
       <ToastContainer position="top-right" autoClose={5000} />
       <main className="container mx-auto px-4 py-8">
         <div className="bg-white shadow-lg rounded-lg overflow-hidden">

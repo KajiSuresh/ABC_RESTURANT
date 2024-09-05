@@ -35,6 +35,7 @@ const Sidebar = (props: Props) => {
             </TooltipTrigger>
             <TooltipContent side="right">Users</TooltipContent>
           </Tooltip>
+          
           <Tooltip>
             <TooltipTrigger asChild>
               <Link
@@ -49,6 +50,7 @@ const Sidebar = (props: Props) => {
             </TooltipTrigger>
             <TooltipContent side="right">Menu</TooltipContent>
           </Tooltip>
+          
           <Tooltip>
             <TooltipTrigger asChild>
               <Link

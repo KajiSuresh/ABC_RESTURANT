@@ -1,46 +1,40 @@
 "use client"
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button"
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table"
-import { Pencil, Trash2 } from "lucide-react"
-
+import { Trash2 } from "lucide-react"
 import EditUser from './model/edit_user';
+import { User, userService } from '@/action/user';
 
-const userData = [
-  {
-    id:"",
-    Name: "Kajee",
-    Phone: "0787703283",
-    Password: "0815",
-    Email: "Kaji15@gmail.com",
-  },
-  {
-    id:"",
-    Name: "Suve",
-    Phone: "0787723456",
-    Password: "1224",
-    Email: "Suve24@gmail.com",
-  },
-]
+export default function UserDashboard() {
+  const [users, setUsers] = useState<User[]>([]);
 
-export default function User() {
-  const handleEdit = (id: any) => {
-    console.log(`Edit ${id}`);
-    // Implement edit functionality
-  }
+  useEffect(() => {
+    fetchUsers();
+  }, []);
 
-  const handleDelete = (id: any) => {
-    console.log(`Delete ${id}`);
-    // Implement delete functionality
+  const fetchUsers = async () => {
+    try {
+      const fetchedUsers = await userService.getUsers();
+      setUsers(fetchedUsers);
+    } catch (error) {
+      console.error("Failed to fetch users:", error);
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    try {
+      await userService.deleteUser(id);
+      fetchUsers(); // Refresh the list after deletion
+    } catch (error) {
+      console.error(`Failed to delete user ${id}:`, error);
+    }
   }
 
   return (
     <div className="w-full p-6">
       <div className="flex justify-between items-center">
-        <div className="flex-shrink-0 text-[25px] font-semibold p-2">User</div>
-        <div className="flex justify-end mb-4 flex-shrink-0">
-         
-        </div>
+        <div className="flex-shrink-0 text-[25px] font-semibold p-2">Users</div>
       </div>
       <div className="border rounded-lg overflow-hidden">
         <Table>
@@ -48,21 +42,19 @@ export default function User() {
             <TableRow>
               <TableHead>Name</TableHead>
               <TableHead>Phone</TableHead>
-              <TableHead>Password</TableHead>
               <TableHead>Email</TableHead>
-              <TableHead>Action</TableHead>
+              <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {userData.map((user) => (
+            {users.map((user) => (
               <TableRow key={user.id}>
-                <TableCell className="font-medium">{user.Name}</TableCell>
-                <TableCell>{user.Phone}</TableCell>
-                <TableCell>{user.Password}</TableCell>
-                <TableCell>{user.Email}</TableCell>
+                <TableCell className="font-medium">{user.name}</TableCell>
+                <TableCell>{user.phoneNo}</TableCell>
+                <TableCell>{user.email}</TableCell>
                 <TableCell>
-                 <EditUser/>
-                  <Button variant="outline" size="icon" className="ml-2" onClick={() => handleDelete(user.Name)}>
+                  {/* <EditUser user={user} onEdit={fetchUsers} /> */}
+                  <Button variant="outline" size="icon" className="ml-2" onClick={() => handleDelete(user.id)}>
                     <Trash2 className="h-4 w-4" />
                   </Button>
                 </TableCell>

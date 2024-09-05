@@ -5,6 +5,7 @@ import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@
 import { Trash2 } from "lucide-react"
 import { Staff, staffService } from '@/action/staff';
 import AddStaff from './model/add_staff';
+import EditStaff from './model/edit_staff';
 
 export default function StaffDashboard() {
   const [staff, setStaff] = useState<Staff[]>([]);
@@ -56,6 +57,7 @@ export default function StaffDashboard() {
                 <TableCell>{staffMember.phone}</TableCell>
                 <TableCell>{staffMember.position}</TableCell>
                 <TableCell>
+                  <EditStaff staff={staffMember} onStaffUpdated={fetchStaff} />
                   <Button variant="outline" size="icon" onClick={() => handleDelete(staffMember.id)}>
                     <Trash2 className="h-4 w-4" />
                   </Button>

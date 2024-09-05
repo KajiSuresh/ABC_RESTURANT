@@ -46,7 +46,7 @@ const ContactPage = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-6xl">
+    <div className="container mx-auto px-4 py-8 max-w-6xl" id='contact'>
       <ToastContainer position="top-right" autoClose={5000} />
       <h1 className="text-4xl font-bold mb-8 text-center">Contact Us</h1>
       <div className="flex flex-col md:flex-row gap-8">

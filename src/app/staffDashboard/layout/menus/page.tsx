@@ -1,38 +1,36 @@
 "use client"
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button"
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table"
-import { Pencil, Trash2 } from "lucide-react"
+import { Trash2 } from "lucide-react"
+
 import AddMenu from "./model/add_menu"
 import EditMenu from './model/edit_menu';
+import { Menu, menuService } from '@/action/menu';
 
-const menuItems = [
-  {
-    id: "ITEM001",
-    name: "Margherita Pizza",
-    category: "Pizza",
-    price: "$12.99",
-    description: "Classic pizza with tomato sauce, mozzarella, and basil",
-  },
-  {
-    id: "ITEM002",
-    name: "Caesar Salad",
-    category: "Salad",
-    price: "$8.99",
-    description: "Romaine lettuce, croutons, parmesan cheese, and Caesar dressing",
-  },
-  // Add more menu items as needed
-]
+export default function MenuDashboard() {
+  const [menuItems, setMenuItems] = useState<Menu[]>([]);
 
-export default function Menu() {
-  const handleEdit = (id: string) => {
-    console.log(`Edit item ${id}`);
-    // Implement edit functionality
-  }
+  useEffect(() => {
+    fetchMenuItems();
+  }, []);
 
-  const handleDelete = (id: string) => {
-    console.log(`Delete item ${id}`);
-    // Implement delete functionality
+  const fetchMenuItems = async () => {
+    try {
+      const fetchedMenuItems = await menuService.getMenuItems();
+      setMenuItems(fetchedMenuItems);
+    } catch (error) {
+      console.error("Failed to fetch menu items:", error);
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    try {
+      await menuService.deleteMenuItem(id);
+      fetchMenuItems(); // Refresh the list after deletion
+    } catch (error) {
+      console.error(`Failed to delete menu item ${id}:`, error);
+    }
   }
 
   return (
@@ -40,7 +38,7 @@ export default function Menu() {
       <div className="flex justify-between items-center">
         <div className="flex-shrink-0 text-[25px] font-semibold p-2">Menu</div>
         <div className="flex justify-end mb-4 flex-shrink-0">
-          <AddMenu/>
+          <AddMenu onAdd={fetchMenuItems} />
         </div>
       </div>
       <div className="border rounded-lg overflow-hidden">
@@ -50,7 +48,7 @@ export default function Menu() {
               <TableHead>Name</TableHead>
               <TableHead>Category</TableHead>
               <TableHead>Description</TableHead>
-              <TableHead >Price</TableHead>
+              <TableHead>Price</TableHead>
               <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
@@ -60,9 +58,9 @@ export default function Menu() {
                 <TableCell className="font-medium">{item.name}</TableCell>
                 <TableCell>{item.category}</TableCell>
                 <TableCell>{item.description}</TableCell>
-                <TableCell>{item.price}</TableCell>
+                <TableCell>${item.price.toFixed(2)}</TableCell>
                 <TableCell>
-                  <EditMenu/>
+                  {/* <EditMenu menuItem={item} onEdit={fetchMenuItems} /> */}
                   <Button variant="outline" size="icon" onClick={() => handleDelete(item.id)}>
                     <Trash2 className="h-4 w-4" />
                   </Button>

@@ -1,54 +1,54 @@
-import React from 'react';
+'use client'
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
+import { ServiceType, serviceTypeService } from '@/action/service';
 
-const ServiceCard: React.FC<{ imageSrc: string; title: string; description: string }> = ({ imageSrc, title, description }) => (
-  <div className="flex-1 min-w-[250px] max-w-[300px]">
-    <Image
-      src={imageSrc}
-      alt={title}
-      width={300}
-      height={200}
-      className="w-full h-48 object-cover rounded-lg mb-4"
-    />
-    <h3 className="text-xl font-semibold mb-2">{title}</h3>
-    <p className="text-sm text-gray-600">{description}</p>
+
+const ServiceCard: React.FC<{ service: ServiceType }> = ({ service }) => (
+  <div className="bg-white rounded-lg shadow-md overflow-hidden">
+    <Image src={service.serviceImage} alt={service.serviceName} width={300} height={200} className="w-full h-48 object-cover" />
+    <div className="p-4">
+      <h3 className="text-xl font-semibold mb-2">{service.serviceName}</h3>
+      <p className="text-gray-600">{service.description}</p>
+    </div>
   </div>
 );
 
-const ServicesSection = () => {
-  const services = [
-    {
-      imageSrc: "/services/roomser.jpg",
-      title: "Room service",
-      description: "Grill Room Service. In this type of service, various vegetables and meats are displayed for better view and choice.",
-    },
-    {
-      imageSrc: "/services/bufser.jpg",
-      title: "Buffet service",
-      description: "Buffet Service Style. The buffet is self-service, where food is displayed on tables.",
-    },
-    {
-      imageSrc: "/services/gueser.jpg",
-      title: "Gueridon service",
-      description: "Partially cooked food from the kitchen is taken to the Gueridon Trolly for cooking it completely.",
-    },
-    {
-      imageSrc: "/services/fcser.jpg",
-      title: "Food court",
-      description: "Fast-food restaurants have become an integral part of modern dining culture, offering quick and convenient service for people on the go.",
-    },
-    
-  ];
+const ServicesSection: React.FC = () => {
+  const [services, setServices] = useState<ServiceType[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchServices = async () => {
+      try {
+        const fetchedServices = await serviceTypeService.getServiceTypes();
+        setServices(fetchedServices);
+        setIsLoading(false);
+      } catch (err) {
+        setError('Failed to fetch services');
+        setIsLoading(false);
+      }
+    };
+
+    fetchServices();
+  }, []);
+
+  
+
 
   return (
-    <section className="py-16 px-4 max-w-6xl mx-auto">
-      <h2 className="text-3xl font-bold mb-12 max-w-2xl">
-        We also offer unique services for your events
-      </h2>
-      <div className="flex flex-wrap gap-8 justify-center">
-        {services.map((service, index) => (
-          <ServiceCard key={index} {...service} />
-        ))}
+    <section className="py-12 bg-gray-100">
+      <div className="container mx-auto px-4">
+        <h2 className="text-3xl font-bold text-center mb-8">
+          We also offer unique services for your events
+        </h2>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {services.map((service) => (
+            <ServiceCard key={service.id} service={service} />
+          ))}
+        </div>
       </div>
     </section>
   );

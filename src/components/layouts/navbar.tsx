@@ -13,7 +13,7 @@ export const Navbar = () => {
     <>
       <nav className="bg-white border-gray-200 dark:bg-gray-900">
         <div className="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl p-4">
-          <Link href="/" className="flex items-center space-x-3 rtl:space-x-reverse">
+          <Link href="#home" className="flex items-center space-x-3 rtl:space-x-reverse">
             <Image src="/abc.png" alt="Flowbite Logo" width={150} height={180} className='h-12' />
 
           </Link>
@@ -28,10 +28,10 @@ export const Navbar = () => {
           <div className="flex justify-center">
             <ul className="flex flex-row font-medium space-x-8 rtl:space-x-reverse text-sm">
               <li>
-                <Link href="/" className="text-gray-900 dark:text-white hover:underline" aria-current="page">Home</Link>
+                <Link href="#home" className="text-gray-900 dark:text-white hover:underline" aria-current="page">Home</Link>
               </li>
               <li>
-                <Link href="/company" className="text-gray-900 dark:text-white hover:underline">Company</Link>
+                <Link href="" className="text-gray-900 dark:text-white hover:underline">Company</Link>
               </li>
               <li>
                 <Link href="/team" className="text-gray-900 dark:text-white hover:underline">Team</Link>

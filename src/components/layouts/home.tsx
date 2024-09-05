@@ -3,8 +3,10 @@ import Image from 'next/image';
 import Head from 'next/head';
 
 const HomePage = () => {
+
+    
     return (
-        <section className="relative min-h-screen overflow-hidden">
+        <section className="relative min-h-screen overflow-hidden" id='home'>
             <Image
                 src="/res.jpg"
                 alt="Restaurant background"
@@ -18,13 +20,13 @@ const HomePage = () => {
 
             <div className="relative z-20 flex flex-col min-h-screen text-white">
                 <header className="p-6 flex justify-between items-center">
-                    <div className="text-2xl font-bold">ABC</div>
+                    <div className="text-2xl font-bold">ABC Restaurant</div>
                     <nav className="space-x-6">
-                        <a href="#" className="hover:text-white">Home</a>
-                        <a href="#" className="hover:text-white">About Us</a>
-                        <a href="#" className="hover:text-white">Menu</a>
-                        <a href="#" className="hover:text-white">Testimonial</a>
-                        <a href="#" className="hover:text-white">Contact</a>
+                        <a href="#home" className="hover:text-white">Home</a>
+                        <a href="#about" className="hover:text-white">About Us</a>
+                        <a href="#menu" className="hover:text-white">Menu</a>
+                        <a href="#reservation" className="hover:text-white">Reservation</a>
+                        <a href="#contact" className="hover:text-white">Contact</a>
                         <a href='/auth/login' className="border border-white px-4 py-2 rounded hover:bg-white hover:text-black">LOGIN</a>
                     </nav>
                 </header>

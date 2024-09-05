@@ -3,20 +3,19 @@ import prisma from "@/lib/db_client"; // Ensure this path is correct for your Pr
 
 export async function GET(request: NextRequest) {
     try {
-        // Fetch all dining tables from the database
-        const diningTables = await prisma.diningTable.findMany();
+        // Count all users in the database
+        const userCount = await prisma.user.count();
 
-        // Return the dining tables as a JSON response
-        return NextResponse.json({ diningTables }, { status: 200 });
+        // Return the user count as a JSON response
+        return NextResponse.json({ count: userCount }, { status: 200 });
     } catch (error) {
-        console.error("Failed to fetch dining tables:", error);
+        console.error("Failed to fetch user count:", error);
         return NextResponse.json(
-            { error: "An error occurred while fetching dining tables" },
+            { error: "An error occurred while fetching user count" },
             { status: 500 }
         );
     }
 }
-
 export async function POST(request: NextRequest) {
     try {
         const body = await request.json();
@@ -62,4 +61,37 @@ export async function DELETE(request: NextRequest) {
             { status: 500 }
         );
     }
+
+    
 }
+
+export async function PUT(request: NextRequest) {
+    try {
+        const { searchParams } = new URL(request.url);
+        const id = searchParams.get('id');
+
+        if (!id) {
+            return NextResponse.json({ error: "ID is required" }, { status: 400 });
+        }
+
+        const body = await request.json();
+        console.log('Received update request:', { id, body });
+
+        // Update the dining table
+        const updatedDiningTable = await prisma.diningTable.update({
+            where: { id },
+            data: body,
+        });
+
+        console.log('Updated dining table:', updatedDiningTable);
+
+        return NextResponse.json({ diningTable: updatedDiningTable }, { status: 200 });
+    } catch (error) {
+        console.error("Failed to update dining table:", error);
+        return NextResponse.json(
+            { error: "An error occurred while updating the dining table" },
+            { status: 500 }
+        );
+    }
+}
+
