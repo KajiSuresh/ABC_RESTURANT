@@ -5,6 +5,7 @@ import { Pencil } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { DiningTable, DiningTableData, diningTableService } from "@/action/dinning";
+import Image from 'next/image';
 
 interface EditDinningProps {
   dinning: DiningTable;
@@ -91,7 +92,7 @@ export default function EditDinning({ dinning, onDinningUpdated }: EditDinningPr
             {formData.diningImage && (
               <div>
                 <p>Current image:</p>
-                <img src={formData.diningImage} alt="Dining table" style={{maxWidth: '200px'}} />
+                <Image src={formData.diningImage} alt="Dining table" style={{maxWidth: '200px'}} />
               </div>
             )}
           </div>
