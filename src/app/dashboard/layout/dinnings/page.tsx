@@ -52,27 +52,36 @@ export default function DiningDashboard() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {diningTables.map((diningTable) => (
-              <TableRow key={diningTable.id}>
-                <TableCell className="font-medium">{diningTable.diningName}</TableCell>
-                <TableCell>
-                  <Image
-                    src={diningTable.diningImage || "/placeholder.svg"}
-                    width={64}
-                    height={64}
-                    alt="Dining Table Image"
-                    className="aspect-square rounded-md object-cover"
-                  />
-                </TableCell>
-                <TableCell>
-                  <EditDinning dinning={diningTable} onDinningUpdated={fetchDiningTables}/>
-                  <Button variant="outline" size="icon" onClick={() => handleDelete(diningTable.id)}>
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
+  {!diningTables ? (
+    <TableRow>
+      <TableCell colSpan={3} className="text-center">
+        Loading...
+      </TableCell>
+    </TableRow>
+  ) : (
+    diningTables.map((diningTable) => (
+      <TableRow key={diningTable.id}>
+        <TableCell className="font-medium">{diningTable.diningName}</TableCell>
+        <TableCell>
+          <Image
+            src={diningTable.diningImage || "/placeholder.svg"}
+            width={64}
+            height={64}
+            alt="Dining Table Image"
+            className="aspect-square rounded-md object-cover"
+          />
+        </TableCell>
+        <TableCell>
+          <EditDinning dinning={diningTable} onDinningUpdated={fetchDiningTables} />
+          <Button variant="outline" size="icon" onClick={() => handleDelete(diningTable.id)}>
+            <Trash2 className="h-4 w-4" />
+          </Button>
+        </TableCell>
+      </TableRow>
+    ))
+  )}
+</TableBody>
+
         </Table>
       </div>
     </div>
