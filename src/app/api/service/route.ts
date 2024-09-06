@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import prisma from "@/lib/db_client"; // Ensure this path is correct for your Prisma client
+import prisma from "../../../lib/db_client"; // Ensure this path is correct for your Prisma client
 
 export async function GET(request: NextRequest) {
     try {
