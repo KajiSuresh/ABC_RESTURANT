@@ -11,10 +11,13 @@ import EditDinning from './model/edit_dinning';
 
 export default function DiningDashboard() {
   const [diningTables, setDiningTables] = useState<DiningTable[]>([]);
-
+  console.log("diningTables", diningTables);
+  
   useEffect(() => {
     fetchDiningTables();
   }, []);
+
+  
 
   const fetchDiningTables = async () => {
     try {
@@ -24,6 +27,8 @@ export default function DiningDashboard() {
       console.error("Failed to fetch dining tables:", error);
     }
   };
+
+
 
   const handleDelete = async (id: string) => {
     try {

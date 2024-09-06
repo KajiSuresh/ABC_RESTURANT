@@ -3,9 +3,8 @@ import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { ServiceType, serviceTypeService } from '@/action/service';
 
-
 const ServiceCard: React.FC<{ service: ServiceType }> = ({ service }) => (
-  <div className="bg-white rounded-lg shadow-md overflow-hidden">
+  <div className="bg-white rounded-lg shadow-md overflow-hidden min-w-[300px]">
     <Image src={service.serviceImage} alt={service.serviceName} width={300} height={200} className="w-full h-48 object-cover" />
     <div className="p-4">
       <h3 className="text-xl font-semibold mb-2">{service.serviceName}</h3>
@@ -34,9 +33,6 @@ const ServicesSection: React.FC = () => {
     fetchServices();
   }, []);
 
-  
-
-
   return (
     <section className="py-12 bg-gray-100">
       <div className="container mx-auto px-4">
@@ -44,7 +40,7 @@ const ServicesSection: React.FC = () => {
           We also offer unique services for your events
         </h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="flex overflow-x-auto space-x-4">
           {services.map((service) => (
             <ServiceCard key={service.id} service={service} />
           ))}
