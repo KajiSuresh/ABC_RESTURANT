@@ -7,6 +7,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { ServiceType, serviceTypeService } from '@/action/service';
 
+import { ToastAction } from "@/components/ui/toast";
+import { useToast } from '@/hooks/use-toast';
 
 interface EditServiceProps {
   service: ServiceType;
@@ -20,6 +22,8 @@ export default function EditService({ service, onServiceUpdated }: EditServicePr
     serviceImage: service.serviceImage,
     description: service.description,
   });
+
+  const { toast } = useToast(); // Initialize the toast hook
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -35,16 +39,30 @@ export default function EditService({ service, onServiceUpdated }: EditServicePr
       await serviceTypeService.updateServiceType(service.id, formData);
       await onServiceUpdated();
       setIsOpen(false);
+      
+      // Success toast message
+      toast({
+        title: "Success",
+        description: "Service updated successfully.",
+        action: <ToastAction altText="OK">OK</ToastAction>,
+      });
     } catch (error) {
       console.error("Failed to update service:", error);
-      // Handle error (e.g., show an error message to the user)
+      
+      // Error toast message
+      toast({
+        title: "Error",
+        description: "Failed to update the service. Please try again.",
+        variant: "destructive", // Optional: Style for error
+        action: <ToastAction altText="Retry">Retry</ToastAction>,
+      });
     }
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" size="icon">
+        <Button variant="outline" size="icon" className='mr-2'>
           <Pencil className="h-4 w-4" />
         </Button>
       </DialogTrigger>

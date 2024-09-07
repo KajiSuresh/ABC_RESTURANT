@@ -6,6 +6,8 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { serviceTypeService } from '@/action/service';
+import { useToast } from '@/hooks/use-toast';
+
 
 interface AddServiceProps {
   onServiceAdded: () => Promise<void>;
@@ -18,14 +20,19 @@ export default function AddService({ onServiceAdded }: AddServiceProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
   const [isOpen, setIsOpen] = useState(false);
+  const { toast } = useToast();
 
+ 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setError('');
 
-  if (!image) {
-      setError('Please fill in all fields');
+    if (!image) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Please fill in all fields",
+      });
       setIsSubmitting(false);
       return;
     }
@@ -34,24 +41,35 @@ export default function AddService({ onServiceAdded }: AddServiceProps) {
       const base64Image = await convertToBase64(image);
 
       const newService = await serviceTypeService.createServiceType({
-        serviceName:serviceName,
-        serviceImage:base64Image,
-        description:description,
-
-      })
+        serviceName: serviceName,
+        serviceImage: base64Image,
+        description: description,
+      });
       
       // Reset form and close dialog on success
       setServiceName('');
       setImage(null);
       setDescription('');
       setIsOpen(false);
+      
+      toast({
+        title: "Success",
+        description: "Service added successfully",
+      });
+      
+      await onServiceAdded();
     } catch (err) {
-      setError('Failed to create service. Please try again.');
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to create service. Please try again.",
+      });
       console.error(err);
     } finally {
       setIsSubmitting(false);
     }
   };
+
 
   const convertToBase64 = (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {

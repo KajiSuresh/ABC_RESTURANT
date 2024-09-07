@@ -7,9 +7,12 @@ import AddService from "./model/add_service"
 import EditService from './model/edit_service';
 import { ServiceType, serviceTypeService } from '@/action/service'; // Adjust the import path as needed
 import Image from 'next/image';
+import { useToast } from '@/hooks/use-toast';
+
 
 export default function Service() {
   const [services, setServices] = useState<ServiceType[]>([]);
+  const { toast } = useToast()
 
   useEffect(() => {
     fetchServices();
@@ -21,6 +24,11 @@ export default function Service() {
       setServices(fetchedServices);
     } catch (error) {
       console.error("Failed to fetch services:", error);
+      toast({
+        title: "Error",
+        description: "Failed to fetch services. Please try again.",
+        variant: "destructive",
+      })
     }
   };
 
@@ -33,8 +41,17 @@ export default function Service() {
     try {
       await serviceTypeService.deleteServiceType(id);
       fetchServices(); // Refresh the list after deletion
+      toast({
+        title: "Service Deleted",
+        description: "The service has been successfully deleted.",
+      })
     } catch (error) {
       console.error(`Failed to delete service ${id}:`, error);
+      toast({
+        title: "Error",
+        description: "Failed to delete the service. Please try again.",
+        variant: "destructive",
+      })
     }
   }
 
@@ -50,8 +67,8 @@ export default function Service() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Name</TableHead>
-              <TableHead>Description</TableHead>
+              <TableHead className='w-[300px]'>Name</TableHead>
+              <TableHead className='w-[500px]'>Description</TableHead>
               <TableHead>Image</TableHead>
               <TableHead>Action</TableHead>
             </TableRow>
