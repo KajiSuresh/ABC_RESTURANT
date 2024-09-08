@@ -41,13 +41,14 @@ export const reservationService = {
   },
 
   async deleteReservation(id: string): Promise<void> {
-    const response = await fetch(`/api/reservationservice?id=${id}`, {
+    const response = await fetch(`/api/reservation?id=${id}`, {
       method: 'DELETE',
     });
     if (!response.ok) {
       throw new Error('Failed to delete reservation');
     }
   },
+  
 
   async updateReservation(id: string, reservationData: Partial<ReservationData>): Promise<Reservation> {
     const response = await fetch(`/api/reservation?id=${id}`, {

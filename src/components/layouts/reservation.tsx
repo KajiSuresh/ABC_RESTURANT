@@ -45,26 +45,29 @@ const Reservation: React.FC = () => {
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     if (!date) {
-      toast.error('Please select a date')
-      return
+      toast.error('Please select a date');
+      return;
+    }
+    if (!formData.time || !formData.person) {
+      toast.error('Please fill all required fields');
+      return;
     }
     try {
       const reservationData: ReservationData = {
         ...formData,
-        date: date,
+        date,
         time: new Date(`${format(date, 'yyyy-MM-dd')}T${formData.time}:00`),
-        person: formData.person
-      }
-      await reservationService.createReservation(reservationData)
-      toast.success('Reservation created successfully!')
-      resetForm()
+      };
+      await reservationService.createReservation(reservationData);
+      toast.success('Reservation created successfully!');
+      resetForm();
     } catch (error) {
-      console.error('Error creating reservation:', error)
-      toast.error('Failed to create reservation. Please try again.')
+      console.error('Error creating reservation:', error);
+      toast.error('Failed to create reservation. Please try again.');
     }
-  }
+  };
 
   return (
     <div className="bg-gray-100" id='reservation'>

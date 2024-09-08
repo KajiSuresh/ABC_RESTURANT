@@ -5,6 +5,8 @@ import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@
 import { Trash2 } from "lucide-react"
 import EditUser from './model/edit_user';
 import { User, userService } from '@/action/user';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function UserDashboard() {
   const [users, setUsers] = useState<User[]>([]);
@@ -19,6 +21,7 @@ export default function UserDashboard() {
       setUsers(fetchedUsers);
     } catch (error) {
       console.error("Failed to fetch users:", error);
+      toast.error("Failed to fetch users.");
     }
   };
 
@@ -26,13 +29,16 @@ export default function UserDashboard() {
     try {
       await userService.deleteUser(id);
       fetchUsers(); // Refresh the list after deletion
+      toast.success("User deleted successfully.");
     } catch (error) {
       console.error(`Failed to delete user ${id}:`, error);
+      toast.error(`Failed to delete user.`);
     }
   }
 
   return (
     <div className="w-full p-6">
+      <ToastContainer />
       <div className="flex justify-between items-center">
         <div className="flex-shrink-0 text-[25px] font-semibold p-2">Users</div>
       </div>

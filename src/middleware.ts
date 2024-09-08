@@ -1,22 +1,20 @@
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
 
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
-  const authToken = req.cookies.get("authToken");
+  const authToken = req.cookies.get('authToken')?.value;
+  const role = req.cookies.get('role')?.value;
 
-  // console.log(⁠ Pathname: ${pathname} ⁠);
-  // console.log(⁠ AuthToken: ${authToken} ⁠);
+  // Check for authentication when accessing the admin dashboard
+  if (pathname.startsWith('/dashboard') && (!authToken || role !== 'ADMIN')) {
+    return NextResponse.redirect(new URL('/auth/login', req.url));
+  }
 
-  // Redirect to /auth/login if accessing /dashboard without authToken
-  if (pathname === "/dashboard" && !authToken) {
-    console.log("Redirecting to /auth/login");
-    return NextResponse.redirect(new URL("/auth/login", req.url));
+  // Check for authentication when accessing the staff dashboard
+  if (pathname.startsWith('/layout/staffs') && (!authToken || role !== 'STAFF')) {
+    return NextResponse.redirect(new URL('/auth/login', req.url));
   }
 
   return NextResponse.next();
 }
-
-export const config = {
-  matcher: ["/dashboard"], // Apply middleware to /dashboard path
-};

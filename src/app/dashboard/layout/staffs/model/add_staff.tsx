@@ -13,6 +13,7 @@ export default function AddStaff({ onAdd }: { onAdd: () => void }) {
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [position, setPosition] = useState('');
+  const [role, setRole] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
   const [isOpen, setIsOpen] = useState(false);
@@ -22,7 +23,7 @@ export default function AddStaff({ onAdd }: { onAdd: () => void }) {
     setIsSubmitting(true);
     setError('');
 
-    if (!staffname || !email || !phone || !password || !position) {
+    if (!staffname || !email || !phone || !password || !position || !role) {
       setError('Please fill in all fields');
       setIsSubmitting(false);
       return;
@@ -35,6 +36,7 @@ export default function AddStaff({ onAdd }: { onAdd: () => void }) {
         phone,
         password,
         position,
+        role,
       });
 
       console.log('New staff member created:', newStaff);
@@ -44,9 +46,10 @@ export default function AddStaff({ onAdd }: { onAdd: () => void }) {
       setPhone('');
       setPassword('');
       setPosition('');
+      setRole('');
       setIsOpen(false);
-      onAdd(); // Refresh the staff list
-    } catch (error) {
+      onAdd();
+    }catch (error) {
       console.error('Failed to create staff member:', error);
       setError('Failed to create staff member. Please try again.');
     } finally {
@@ -93,7 +96,7 @@ export default function AddStaff({ onAdd }: { onAdd: () => void }) {
               <Input 
                 id="password" 
                 type="password"
-                placeholder="Enter Password" 
+                placeholder="Enter password" 
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
@@ -103,23 +106,35 @@ export default function AddStaff({ onAdd }: { onAdd: () => void }) {
               <Label htmlFor="position">Position</Label>
               <Input 
                 id="position" 
-                placeholder="Enter Position" 
+                placeholder="Enter position" 
                 value={position}
                 onChange={(e) => setPosition(e.target.value)}
                 required
               />
             </div>
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <Input 
-              id="email" 
-              type="email" 
-              placeholder="Enter email" 
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="role">Role</Label>
+              <Input 
+                id="role" 
+                placeholder="Enter role" 
+                value={role}
+                onChange={(e) => setRole(e.target.value)}
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <Input 
+                id="email" 
+                type="email" 
+                placeholder="Enter email" 
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
           </div>
           {error && <p className="text-red-500">{error}</p>}
           <Button type="submit" className="w-full" disabled={isSubmitting}>

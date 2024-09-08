@@ -1,54 +1,43 @@
-import React, { useState } from 'react';
-import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Pencil } from "lucide-react";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Staff, StaffData, staffService } from '@/action/staff';
-
+import React, { useState, useEffect } from 'react';
+import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Button } from "@/components/ui/button"
+import { Label } from "@/components/ui/label"
+import { Input } from "@/components/ui/input"
+import { Staff, staffService } from '@/action/staff';
 
 interface EditStaffProps {
   staff: Staff;
-  onStaffUpdated: () => void;
+  onClose: () => void;
+  onSave: () => void;
 }
 
-export default function EditStaff({ staff, onStaffUpdated }: EditStaffProps) {
-  const [isOpen, setIsOpen] = useState(false);
-  const [formData, setFormData] = useState<StaffData>({
-    staffname: staff.staffname,
-    email: staff.email,
-    phone: staff.phone,
-    password: '', // We don't populate the password for security reasons
-    position: staff.position,
-  });
+export default function EditStaff({ staff, onClose, onSave }: EditStaffProps) {
+  const [formData, setFormData] = useState<Staff>(staff);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData(prevData => ({
-      ...prevData,
-      [name]: value,
-    }));
+  useEffect(() => {
+    setFormData(staff);
+  }, [staff]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.id]: e.target.value
+    });
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await staffService.updateStaff(staff.id, formData);
-      onStaffUpdated();
-      setIsOpen(false);
+      await staffService.updateStaff(formData.id, formData);
+      onSave();
+      onClose();
     } catch (error) {
-      console.error('Failed to update staff:', error);
-      // Handle error (e.g., show error message to user)
+      console.error("Failed to update staff member:", error);
     }
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild>
-        <Button variant="outline" size="icon" className="mt-1 mr-2">
-          <Pencil className="h-4 w-4" />
-        </Button>
-      </DialogTrigger>
+    <Dialog open onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[700px]">
         <DialogHeader>
           <DialogTitle>Edit Staff</DialogTitle>
@@ -57,62 +46,25 @@ export default function EditStaff({ staff, onStaffUpdated }: EditStaffProps) {
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="staffname">Name</Label>
-              <Input 
-                id="staffname" 
-                name="staffname"
-                value={formData.staffname}
-                onChange={handleInputChange}
-                placeholder="Enter name" 
-              />
+              <Input id="staffname" value={formData.staffname} onChange={handleChange} placeholder="Enter name" />
             </div>
             <div className="space-y-2">
               <Label htmlFor="phone">Phone Number</Label>
-              <Input 
-                id="phone" 
-                name="phone"
-                value={formData.phone}
-                onChange={handleInputChange}
-                placeholder="Enter phone number" 
-              />
+              <Input id="phone" type="tel" value={formData.phone} onChange={handleChange} placeholder="Enter phone number" />
             </div>
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input 
-                id="email" 
-                name="email"
-                type="email"
-                value={formData.email}
-                onChange={handleInputChange}
-                placeholder="Enter email" 
-              />
+              <Label htmlFor="position">Position</Label>
+              <Input id="position" value={formData.position} onChange={handleChange} placeholder="Enter position" />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="position">Position</Label>
-              <Input 
-                id="position" 
-                name="position"
-                value={formData.position}
-                onChange={handleInputChange}
-                placeholder="Enter Position" 
-              />
+              <Label htmlFor="role">Role</Label>
+              <Input id="role" value={formData.role} onChange={handleChange} placeholder="Enter role" />
             </div>
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
-            <Input 
-              id="password" 
-              name="password"
-              type="password"
-              value={formData.password}
-              onChange={handleInputChange}
-              placeholder="Enter new password (leave blank to keep current)" 
-            />
-          </div>
-
           <Button type="submit" className="w-full">
-            Update Staff
+            Submit
           </Button>
         </form>
       </DialogContent>

@@ -2,13 +2,14 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button"
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table"
-import { Trash2 } from "lucide-react"
+import { Pencil, Trash2 } from "lucide-react"
 import { Staff, staffService } from '@/action/staff';
 import AddStaff from './model/add_staff';
 import EditStaff from './model/edit_staff';
 
 export default function StaffDashboard() {
   const [staff, setStaff] = useState<Staff[]>([]);
+  const [selectedStaff, setSelectedStaff] = useState<Staff | null>(null);
 
   useEffect(() => {
     fetchStaff();
@@ -30,7 +31,19 @@ export default function StaffDashboard() {
     } catch (error) {
       console.error(`Failed to delete staff member ${id}:`, error);
     }
-  }
+  };
+
+  const handleEdit = (staffMember: Staff) => {
+    setSelectedStaff(staffMember);
+  };
+
+  const closeDialog = () => {
+    setSelectedStaff(null);
+  };
+
+  const handleSave = () => {
+    fetchStaff(); // Refresh staff list after saving changes
+  };
 
   return (
     <div className="w-full p-6">
@@ -46,6 +59,7 @@ export default function StaffDashboard() {
               <TableHead>Email</TableHead>
               <TableHead>Phone</TableHead>
               <TableHead>Position</TableHead>
+              <TableHead>Role</TableHead>
               <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
@@ -56,17 +70,25 @@ export default function StaffDashboard() {
                 <TableCell>{staffMember.email}</TableCell>
                 <TableCell>{staffMember.phone}</TableCell>
                 <TableCell>{staffMember.position}</TableCell>
+                <TableCell>{staffMember.role}</TableCell>
                 <TableCell>
-                  <EditStaff staff={staffMember} onStaffUpdated={fetchStaff} />
-                  <Button variant="outline" size="icon" onClick={() => handleDelete(staffMember.id)}>
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
+                  <div className="flex space-x-2">
+                    <Button variant="outline" size="icon" onClick={() => handleEdit(staffMember)}>
+                      <Pencil className="h-4 w-4" />
+                    </Button>
+                    <Button variant="outline" size="icon" onClick={() => handleDelete(staffMember.id)}>
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </div>
+      {selectedStaff && (
+        <EditStaff staff={selectedStaff} onClose={closeDialog} onSave={handleSave} />
+      )}
     </div>
-  )
+  );
 }

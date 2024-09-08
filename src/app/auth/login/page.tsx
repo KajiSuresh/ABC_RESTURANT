@@ -1,33 +1,49 @@
-'use client'
+"use client"
 import React, { useState, FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { UserData, userService } from '@/action/user';
+import { staffService } from '@/action/staff';
 
 interface User extends UserData {
   password: string;
+  role: string;
 }
-
 class LoginManager {
-  private readonly ADMIN_EMAIL = "admin@gmail.com";
-  private readonly ADMIN_PASSWORD = "admin";
+  private readonly ADMIN_EMAIL = 'admin@gmail.com';
+  private readonly ADMIN_PASSWORD = 'admin';
+  private readonly ADMIN_ROLE = 'ADMIN';
+  
 
-  constructor(private router: any) {}
-
-  public async signUp(user: User): Promise<void> {
+  // public async signUp(user: User, router: any): Promise<void> {
+  //   try {
+  //     await userService.createUser({
+  //       name: user.name || '',
+  //       email: user.email,
+  //       password: user.password,
+  //       phoneNo: user.phoneNo || '',
+  //     });
+  //     toast.success('Account created successfully!');
+  //     router.push('/');
+  //   } catch (error) {
+  //     toast.error('Error creating account. Please try again.');
+  //     console.error('Error during sign-up:', error);
+  //   }
+  // }
+  public async signUp(user: User, redirect: any): Promise<void> {
     console.log('Signing up:', user);
     try {
-      const newUser = await userService.createUser({
+      // const newUser = 
+      await userService.createUser({
         name: user.name || '',
         email: user.email,
         password: user.password,
         phoneNo: user.phoneNo || '',
       });
-      console.log('User created successfully:', newUser);
+      // console.log('User created successfully:', newUser);
       toast.success('Account created successfully!');
-
-      this.router.push('/');
+      redirect.push('/');
     } catch (error) {
       console.error('Error creating user:', error);
       toast.error('Error creating account. Please try again.');
@@ -35,93 +51,73 @@ class LoginManager {
     }
   }
 
-//   public async signIn(email: string, password: string): Promise<void> {
-//     console.log('Signing in:', { email, password });
-    
-//     if (this.isAdminLogin(email, password)) {
-//       const token = "mocked-token-from-backend"; 
-//       // Save the token to local storage
-//       localStorage.setItem('authToken', token);
-//       // Save the token to cookies
-// // Save the token to cookies
-// this.setCookie('authToken', token, 7);
-//       // console.log('Admin logged in successfully');
-//       this.router.push('/dashboard');
-//     } else {
-//       await this.regularUserLogin(email, password);
-//     }
-//   }
-
-public async signIn(email: string, password: string): Promise<void> {
-  console.log('Signing in:', { email, password });
-
-  if (this.isAdminLogin(email, password)) {
-    const token = "mocked-token-from-backend"; 
-    localStorage.setItem('authToken', token); // Set in local storage
-    this.setCookie('authToken', token, 7); // Set in cookies
-    this.router.push('/dashboard');
-  } else {
-    await this.regularUserLogin(email, password);
+  public async signIn(email: string, password: string, router: any): Promise<void> {
+    try {
+      if (this.isAdminLogin(email, password)) {
+        this.handleSuccessfulLogin('mocked-token-from-backend', email, this.ADMIN_ROLE, router, '/dashboard');
+      } else {
+        console.log("ddddddd")
+        await this.staffUserLogin(email, password, router); 
+        // Check if it's a staff login
+      }
+    } catch (error) {
+      toast.error('Login failed. Please check your credentials.');
+      console.error('Login error:', error);
+    }
   }
-}
-
-  // Helper function to set a cookie
-private setCookie(name: string, value: string, days: number): void {
-  const date = new Date();
-  date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-  const expires = `expires=${date.toUTCString()}`;
-  document.cookie = `${name}=${value}; ${expires}; path=/`;
-}
-
-
 
   private isAdminLogin(email: string, password: string): boolean {
     return email === this.ADMIN_EMAIL && password === this.ADMIN_PASSWORD;
   }
 
-  private async regularUserLogin(email: string, password: string): Promise<void> {
-    console.log('Regular user login attempt');
+  private async staffUserLogin(email: string, password: string, router: any): Promise<void> {
     try {
-      const users = await userService.getUsers();
-      const user = users.find(user => user.email === email && user.password === password);
-      
-      if (!user) {
+      const staff = await staffService.getStaffByEmail(email,password); // Fetch staff by email
+      console.log('Fetched staff:', staff); // Add this line to debug
+      if (!staff || staff.password !== password || staff.role !== 'STAFF') {
         throw new Error('Invalid credentials');
       }
-
-      console.log('User logged in successfully:', user);
-      
-      // Simulate a token for the purpose of this example
-      const token = "mocked-token-from-backend";
-      
-      // Save the token to local storage
-      localStorage.setItem('authToken', token);
-
-      toast.success('Logged in successfully!');
-      this.router.push('/dashboard');
+      this.handleSuccessfulLogin('mocked-token-from-backends', email, 'STAFF', router, '/dasboard/layout/staffs'); // Redirect staff to staff dashboard
     } catch (error) {
-      console.error('Login failed:', error);
-      toast.error('Login failed. Please check your credentials and try again.');
-      throw new Error('Login failed. Please check your credentials and try again.');
+      console.error('Staff user login error:', error);
+      throw error;
     }
+  }
+
+  private handleSuccessfulLogin(token: string, email: string, role: string, router: any, redirectPath: string): void {
+    localStorage.setItem('authToken', token);
+    this.setCookie('authToken', token, 7);
+    this.setCookie('email', email, 7);
+    this.setCookie('role', role, 7);
+    router.push(redirectPath);
+  }
+  
+  
+  
+
+  private setCookie(name: string, value: string, days: number): void {
+    const date = new Date();
+    date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
+    document.cookie = `${name}=${value}; expires=${date.toUTCString()}; path=/`;
   }
 }
 
 const Login: React.FC = () => {
   const router = useRouter();
-  const loginManager = new LoginManager(router);
+  const loginManager = new LoginManager();
 
-  const [isSignUp, setIsSignUp] = useState(false);
+  const [isSignUp, setIsSignUp] = useState<boolean>(false);
   const [formData, setFormData] = useState<User>({
     name: '',
     phoneNo: '',
     email: '',
     password: '',
+    role: '',
   });
   const [error, setError] = useState<string | null>(null);
 
   const toggleForm = () => {
-    setIsSignUp(!isSignUp);
+    setIsSignUp(prevState => !prevState);
     setError(null);
   };
 
@@ -129,7 +125,7 @@ const Login: React.FC = () => {
     const { name, value } = e.target;
     setFormData(prevState => ({
       ...prevState,
-      [name]: value
+      [name]: value,
     }));
   };
 
@@ -138,13 +134,13 @@ const Login: React.FC = () => {
     setError(null);
     try {
       if (isSignUp) {
-        await loginManager.signUp(formData);
+        await loginManager.signUp(formData, router);
       } else {
-        await loginManager.signIn(formData.email, formData.password);
+        await loginManager.signIn(formData.email, formData.password, router);
       }
     } catch (error) {
-      console.error('Error:', error);
-      setError(error instanceof Error ? error.message : 'An unexpected error occurred');
+      setError('An unexpected error occurred');
+      console.error('Form submission error:', error);
     }
   };
 
@@ -163,32 +159,30 @@ const Login: React.FC = () => {
                 <>
                   <div>
                     <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your name</label>
-                    <input type="text" name="name" id="name" className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="John Doe" onChange={handleInputChange} value={formData.name} />
+                    <input type="text" name="name" id="name" className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white" placeholder="John Doe" onChange={handleInputChange} value={formData.name} />
                   </div>
                   <div>
                     <label htmlFor="phoneNo" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Phone number</label>
-                    <input type="tel" name="phoneNo" id="phoneNo" className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="+1 (123) 456-7890" onChange={handleInputChange} value={formData.phoneNo} />
+                    <input type="tel" name="phoneNo" id="phoneNo" className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white" placeholder="+1 (123) 456-7890" onChange={handleInputChange} value={formData.phoneNo} />
                   </div>
                 </>
               )}
               <div>
                 <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your email</label>
-                <input type="email" name="email" id="email" className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="name@company.com" required onChange={handleInputChange} value={formData.email} />
+                <input type="email" name="email" id="email" className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white" placeholder="name@company.com" required onChange={handleInputChange} value={formData.email} />
               </div>
               <div>
                 <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Password</label>
-                <input type="password" name="password" id="password" placeholder="••••••••" className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required onChange={handleInputChange} value={formData.password} />
+                <input type="password" name="password" id="password" placeholder="••••••••" className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white" required onChange={handleInputChange} value={formData.password} />
               </div>
-              <div className="space-y-2">
-                <button type="submit" className="w-full text-black bg-yellow-500 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
-                  {isSignUp ? 'Create account' : 'Login'}
-                </button>
-              </div>
+              <button type="submit" className="w-full text-black bg-yellow-500 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700">
+                {isSignUp ? 'Create account' : 'Login'}
+              </button>
               <p className="text-sm font-light text-gray-500 dark:text-gray-400">
-                {isSignUp ? 'Already have an account?' : 'Do not have an account yet?'} 
-                <a href="#" onClick={toggleForm} className="font-medium text-primary-600 hover:underline dark:text-primary-500 ml-1">
+                {isSignUp ? 'Already have an account?' : 'Do not have an account yet?'}
+                <button type="button" onClick={toggleForm} className="font-medium text-primary-600 hover:underline dark:text-primary-500 ml-1">
                   {isSignUp ? 'Sign In' : 'Sign up'}
-                </a>
+                </button>
               </p>
             </form>
           </div>

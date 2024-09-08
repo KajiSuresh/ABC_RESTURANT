@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import prisma from "../../../lib/db_client"; // Make sure this path is correct for your Prisma client
+import prisma from "@/lib/db_client"; // Make sure this path is correct for your Prisma client
 
 export async function GET(request: NextRequest) {
     try {
@@ -11,6 +11,7 @@ export async function GET(request: NextRequest) {
                 email: true,
                 phone: true,
                 position: true,
+                role: true,
                 createdAt: true,
                 updatedAt: true,
                 // Note: We're not selecting the password field for security reasons
@@ -31,7 +32,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
     try {
         const body = await request.json();
-        const { staffname, email, phone, password, position } = body;
+        const { staffname, email, phone, password, position, role } = body;
 
         // Create a new staff member
         const newStaff = await prisma.staffType.create({
@@ -41,6 +42,7 @@ export async function POST(request: NextRequest) {
                 phone,
                 password, // Note: storing password as plain text
                 position,
+                role,
             },
         });
 
@@ -90,7 +92,7 @@ export async function PUT(request: NextRequest) {
         }
 
         const body = await request.json();
-        const { staffname, email, phone, password, position } = body;
+        const { staffname, email, phone, password, position,role } = body;
 
         // Update the staff member
         const updatedStaff = await prisma.staffType.update({
@@ -101,6 +103,7 @@ export async function PUT(request: NextRequest) {
                 phone,
                 password, // Note: updating password as plain text
                 position,
+                role,
             },
         });
 
@@ -114,4 +117,6 @@ export async function PUT(request: NextRequest) {
             { status: 500 }
         );
     }
+
+    
 }

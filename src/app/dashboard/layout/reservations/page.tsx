@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button"
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table"
 import { Trash2 } from "lucide-react"
 import { Reservation, reservationService } from '@/action/reservation';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'; // Import toastify styles
 
 export default function ReservationDashboard() {
   const [reservations, setReservations] = useState<Reservation[]>([]);
@@ -24,14 +26,17 @@ export default function ReservationDashboard() {
   const handleDelete = async (id: string) => {
     try {
       await reservationService.deleteReservation(id);
+      toast.success("Reservation deleted successfully"); // Show success toast
       fetchReservations(); // Refresh the list after deletion
     } catch (error) {
+      toast.error("Failed to delete reservation"); // Show error toast
       console.error(`Failed to delete reservation ${id}:`, error);
     }
   }
 
   return (
     <div className="w-full p-6">
+      <ToastContainer /> {/* Add the ToastContainer */}
       <div className="flex justify-between items-center">
         <div className="flex-shrink-0 text-[25px] font-semibold p-2">Reservations</div>
       </div>

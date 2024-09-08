@@ -7,13 +7,12 @@ import AddService from "./model/add_service"
 import EditService from './model/edit_service';
 import { ServiceType, serviceTypeService } from '@/action/service'; // Adjust the import path as needed
 import Image from 'next/image';
-import { useToast } from '@/hooks/use-toast';
-
+import { toast, ToastContainer } from 'react-toastify'; // Import React Toastify
+import 'react-toastify/dist/ReactToastify.css'; // Import styles for React Toastify
 
 export default function Service() {
   const [services, setServices] = useState<ServiceType[]>([]);
-  const { toast } = useToast()
-
+ 
   useEffect(() => {
     fetchServices();
   }, []);
@@ -24,11 +23,7 @@ export default function Service() {
       setServices(fetchedServices);
     } catch (error) {
       console.error("Failed to fetch services:", error);
-      toast({
-        title: "Error",
-        description: "Failed to fetch services. Please try again.",
-        variant: "destructive",
-      })
+      toast.error("Failed to fetch services. Please try again."); // Use toast.error for error messages
     }
   };
 
@@ -41,22 +36,16 @@ export default function Service() {
     try {
       await serviceTypeService.deleteServiceType(id);
       fetchServices(); // Refresh the list after deletion
-      toast({
-        title: "Service Deleted",
-        description: "The service has been successfully deleted.",
-      })
+      toast.success("The service has been successfully deleted."); // Use toast.success for success messages
     } catch (error) {
       console.error(`Failed to delete service ${id}:`, error);
-      toast({
-        title: "Error",
-        description: "Failed to delete the service. Please try again.",
-        variant: "destructive",
-      })
+      toast.error("Failed to delete the service. Please try again."); // Use toast.error for error messages
     }
   }
 
   return (
     <div className="w-full p-6">
+      <ToastContainer /> {/* Add ToastContainer here */}
       <div className="flex justify-between items-center">
         <div className="flex-shrink-0 text-[25px] font-semibold p-2">Services</div>
         <div className="flex justify-end mb-4 flex-shrink-0">
