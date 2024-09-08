@@ -15,33 +15,15 @@ class LoginManager {
   private readonly ADMIN_PASSWORD = 'admin';
   private readonly ADMIN_ROLE = 'ADMIN';
   
-
-  // public async signUp(user: User, router: any): Promise<void> {
-  //   try {
-  //     await userService.createUser({
-  //       name: user.name || '',
-  //       email: user.email,
-  //       password: user.password,
-  //       phoneNo: user.phoneNo || '',
-  //     });
-  //     toast.success('Account created successfully!');
-  //     router.push('/');
-  //   } catch (error) {
-  //     toast.error('Error creating account. Please try again.');
-  //     console.error('Error during sign-up:', error);
-  //   }
-  // }
   public async signUp(user: User, redirect: any): Promise<void> {
     console.log('Signing up:', user);
     try {
-      // const newUser = 
       await userService.createUser({
         name: user.name || '',
         email: user.email,
         password: user.password,
         phoneNo: user.phoneNo || '',
       });
-      // console.log('User created successfully:', newUser);
       toast.success('Account created successfully!');
       redirect.push('/');
     } catch (error) {
@@ -55,8 +37,8 @@ class LoginManager {
     try {
       if (this.isAdminLogin(email, password)) {
         this.handleSuccessfulLogin('mocked-token-from-backend', email, this.ADMIN_ROLE, router, '/dashboard');
+        toast.success('Admin login successful!'); // Success toast for admin login
       } else {
-        console.log("ddddddd")
         await this.staffUserLogin(email, password, router); 
         // Check if it's a staff login
       }
@@ -72,12 +54,12 @@ class LoginManager {
 
   private async staffUserLogin(email: string, password: string, router: any): Promise<void> {
     try {
-      const staff = await staffService.getStaffByEmail(email,password); // Fetch staff by email
+      const staff = await staffService.getStaffByEmail(email, password); // Fetch staff by email
       console.log('Fetched staff:', staff); // Add this line to debug
       if (!staff || staff.password !== password || staff.role !== 'STAFF') {
         throw new Error('Invalid credentials');
       }
-      this.handleSuccessfulLogin('mocked-token-from-backends', email, 'STAFF', router, '/dasboard/layout/staffs'); // Redirect staff to staff dashboard
+      this.handleSuccessfulLogin('mocked-token-from-backends', email, 'STAFF', router, '/dashboard/layout/staffs'); // Redirect staff to staff dashboard
     } catch (error) {
       console.error('Staff user login error:', error);
       throw error;
@@ -91,9 +73,6 @@ class LoginManager {
     this.setCookie('role', role, 7);
     router.push(redirectPath);
   }
-  
-  
-  
 
   private setCookie(name: string, value: string, days: number): void {
     const date = new Date();

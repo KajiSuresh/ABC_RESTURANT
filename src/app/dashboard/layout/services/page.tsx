@@ -77,10 +77,12 @@ export default function Service() {
                   />
                 </TableCell>
                 <TableCell>
+                  <div className='flex'>
                   <EditService service={service} onServiceUpdated={fetchServices} />
                   <Button variant="outline" size="icon" onClick={() => handleDelete(service.id)}>
                     <Trash2 className="h-4 w-4" />
                   </Button>
+                  </div>
                 </TableCell>
               </TableRow>
             ))}

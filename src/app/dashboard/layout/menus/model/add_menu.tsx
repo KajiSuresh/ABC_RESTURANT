@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { menuService } from '@/action/menu';
-import { toast, ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 export default function AddMenu({ onAdd }: { onAdd: () => void }) {
@@ -114,17 +114,7 @@ export default function AddMenu({ onAdd }: { onAdd: () => void }) {
           </form>
         </DialogContent>
       </Dialog>
-      <ToastContainer 
-        position="top-right" 
-        autoClose={5000} 
-        hideProgressBar={false} 
-        newestOnTop={false} 
-        closeOnClick 
-        rtl={false} 
-        pauseOnFocusLoss 
-        draggable 
-        pauseOnHover 
-      />
+     
     </>
   );
 }

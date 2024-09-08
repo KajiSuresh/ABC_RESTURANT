@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
-import { Label } from "@/components/ui/label"
-import { Input } from "@/components/ui/input"
+import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 import { Staff, staffService } from '@/action/staff';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 interface EditStaffProps {
   staff: Staff;
@@ -29,10 +31,12 @@ export default function EditStaff({ staff, onClose, onSave }: EditStaffProps) {
     e.preventDefault();
     try {
       await staffService.updateStaff(formData.id, formData);
+      toast.success("Staff member updated successfully!");
       onSave();
       onClose();
     } catch (error) {
       console.error("Failed to update staff member:", error);
+      toast.error("Failed to update staff member. Please try again.");
     }
   };
 

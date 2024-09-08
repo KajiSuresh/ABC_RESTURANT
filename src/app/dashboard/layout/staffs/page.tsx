@@ -6,6 +6,8 @@ import { Pencil, Trash2 } from "lucide-react"
 import { Staff, staffService } from '@/action/staff';
 import AddStaff from './model/add_staff';
 import EditStaff from './model/edit_staff';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function StaffDashboard() {
   const [staff, setStaff] = useState<Staff[]>([]);
@@ -28,8 +30,10 @@ export default function StaffDashboard() {
     try {
       await staffService.deleteStaff(id);
       fetchStaff(); // Refresh the list after deletion
+      toast.success('Staff member deleted successfully');
     } catch (error) {
       console.error(`Failed to delete staff member ${id}:`, error);
+      toast.error('Failed to delete staff member');
     }
   };
 
@@ -89,6 +93,7 @@ export default function StaffDashboard() {
       {selectedStaff && (
         <EditStaff staff={selectedStaff} onClose={closeDialog} onSave={handleSave} />
       )}
+      <ToastContainer />
     </div>
   );
 }

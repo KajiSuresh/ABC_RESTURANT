@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/popover"
 import { Button } from '@/components/ui/button'
 import { Col, Row } from 'antd'
-import { ToastContainer, toast } from 'react-toastify'
+import {  toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { ReservationData, reservationService } from '@/action/reservation'
 
@@ -71,7 +71,6 @@ const Reservation: React.FC = () => {
 
   return (
     <div className="bg-gray-100" id='reservation'>
-      <ToastContainer position="top-right" autoClose={5000} />
       <main className="container mx-auto px-4 py-8">
         <div className="bg-white shadow-lg rounded-lg overflow-hidden">
           <div className="flex flex-col md:flex-row">
