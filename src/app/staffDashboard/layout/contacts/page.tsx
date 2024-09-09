@@ -1,10 +1,11 @@
-"use client"
+"use client";
 import React, { useState, useEffect } from 'react';
-import { Button } from "@/components/ui/button"
-import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table"
-import { Trash2 } from "lucide-react"
+import { Button } from "@/components/ui/button";
+import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
+import { Trash2 } from "lucide-react";
 import { Contact, contactService } from '@/action/contactus';
-
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'; // Import the CSS for the toast notifications
 
 export default function ContactDashboard() {
   const [contacts, setContacts] = useState<Contact[]>([]);
@@ -26,10 +27,12 @@ export default function ContactDashboard() {
     try {
       await contactService.deleteContact(id);
       fetchContacts(); // Refresh the list after deletion
+      toast.success('Contact deleted successfully!'); // Show success toast
     } catch (error) {
       console.error(`Failed to delete contact ${id}:`, error);
+      toast.error('Failed to delete contact.'); // Show error toast
     }
-  }
+  };
 
   return (
     <div className="w-full p-6">
@@ -62,6 +65,7 @@ export default function ContactDashboard() {
           </TableBody>
         </Table>
       </div>
+      <ToastContainer /> {/* Add this line to render the toast notifications */}
     </div>
-  )
+  );
 }
