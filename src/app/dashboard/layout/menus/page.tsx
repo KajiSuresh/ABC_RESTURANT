@@ -63,15 +63,17 @@ export default function MenuDashboard() {
           <TableBody>
             {menuItems.map((item) => (
               <TableRow key={item.id}>
-                <TableCell className="font-medium">{item.name}</TableCell>
+                <TableCell className="font-medium w-[300px]">{item.name}</TableCell>
                 <TableCell>{item.category}</TableCell>
-                <TableCell>{item.description}</TableCell>
+                <TableCell className='w-[500px]'>{item.description}</TableCell>
                 <TableCell>${item.price.toFixed(2)}</TableCell>
                 <TableCell>
+                  <div className='flex'>
                 <EditMenu menu={item} onMenuUpdated={fetchMenuItems} />
                   <Button variant="outline" size="icon" onClick={() => handleDelete(item.id)}>
                     <Trash2 className="h-4 w-4" />
                   </Button>
+                  </div>
                 </TableCell>
               </TableRow>
             ))}
