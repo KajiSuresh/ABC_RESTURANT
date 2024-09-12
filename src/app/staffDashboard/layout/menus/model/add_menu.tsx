@@ -37,13 +37,12 @@ export default function AddMenu({ onAdd }: { onAdd: () => void }) {
 
       toast.success('New menu item created successfully!');
       console.log('New menu item created:', newMenuItem);
-      // Reset form
       setName('');
       setPrice('');
       setCategory('');
       setDescription('');
       setIsOpen(false);
-      onAdd(); // Refresh the menu items list
+      onAdd(); 
     } catch (error) {
       console.error('Failed to create menu item:', error);
       toast.error('Failed to create menu item. Please try again.');

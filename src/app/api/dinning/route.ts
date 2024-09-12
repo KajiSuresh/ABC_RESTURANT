@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import prisma from "../../../lib/db_client"; // Ensure this path is correct for your Prisma client
+import prisma from "../../../lib/db_client"; 
 
 export async function GET(request: NextRequest) {
     try {
         // Count all users in the database
         const userCount = await prisma.user.count();
 
-        // Return the user count as a JSON response
+       
         return NextResponse.json({ count: userCount }, { status: 200 });
     } catch (error) {
         console.error("Failed to fetch user count:", error);

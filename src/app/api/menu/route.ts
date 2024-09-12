@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import prisma from "../../../lib/db_client"; // Make sure this path is correct for your Prisma client
+import prisma from "../../../lib/db_client";
 
 export async function GET(request: NextRequest) {
     try {
-        // Fetch all menu items from the database
+        
         const menuItems = await prisma.menu.findMany();
 
-        // Return the menu items as a JSON response
+        
         return NextResponse.json({ menuItems }, { status: 200 });
     } catch (error) {
         console.error("Failed to fetch menu items:", error);

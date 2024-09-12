@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import prisma from "../../../lib/db_client"; // Make sure this path is correct for your Prisma client
+import prisma from "../../../lib/db_client"; 
 
 export async function GET(request: NextRequest) {
     try {
-        // Fetch all contacts from the database
+       
         const contacts = await prisma.contact.findMany();
 
-        // Return the contacts as a JSON response
+       
         return NextResponse.json({ contacts }, { status: 200 });
     } catch (error) {
         console.error("Failed to fetch contacts:", error);

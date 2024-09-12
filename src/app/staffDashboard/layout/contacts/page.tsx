@@ -5,7 +5,7 @@ import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@
 import { Trash2 } from "lucide-react";
 import { Contact, contactService } from '@/action/contactus';
 import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css'; // Import the CSS for the toast notifications
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function ContactDashboard() {
   const [contacts, setContacts] = useState<Contact[]>([]);
@@ -65,7 +65,7 @@ export default function ContactDashboard() {
           </TableBody>
         </Table>
       </div>
-      <ToastContainer /> {/* Add this line to render the toast notifications */}
+      <ToastContainer /> 
     </div>
   );
 }

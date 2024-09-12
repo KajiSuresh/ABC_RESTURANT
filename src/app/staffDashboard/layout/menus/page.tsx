@@ -29,13 +29,12 @@ export default function MenuDashboard() {
   const handleDelete = async (id: string) => {
     try {
       await menuService.deleteMenuItem(id);
-      toast.success('Menu item deleted successfully!'); // Show success toast
-      fetchMenuItems(); // Refresh the list after deletion
+      toast.success('Menu item deleted successfully!'); 
+      fetchMenuItems(); 
     } catch (error) {
       if (error instanceof Error) {
-        toast.error(`Failed to delete menu item: ${error.message}`); // Show error toast if error is an instance of Error
-      } else {
-        toast.error('Failed to delete menu item due to an unknown error'); // Show generic error message
+        toast.error(`Failed to delete menu item: ${error.message}`); 
+        toast.error('Failed to delete menu item due to an unknown error'); 
       }
       console.error(`Failed to delete menu item ${id}:`, error);
     }

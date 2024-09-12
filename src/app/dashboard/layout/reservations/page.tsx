@@ -26,17 +26,17 @@ export default function ReservationDashboard() {
   const handleDelete = async (id: string) => {
     try {
       await reservationService.deleteReservation(id);
-      toast.success("Reservation deleted successfully"); // Show success toast
-      fetchReservations(); // Refresh the list after deletion
+      toast.success("Reservation deleted successfully"); 
+      fetchReservations();
     } catch (error) {
-      toast.error("Failed to delete reservation"); // Show error toast
+      toast.error("Failed to delete reservation");
       console.error(`Failed to delete reservation ${id}:`, error);
     }
   }
 
   return (
     <div className="w-full p-6">
-      <ToastContainer /> {/* Add the ToastContainer */}
+      <ToastContainer />
       <div className="flex justify-between items-center">
         <div className="flex-shrink-0 text-[25px] font-semibold p-2">Reservations</div>
       </div>

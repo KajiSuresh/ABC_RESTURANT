@@ -36,13 +36,11 @@ export default function EditService({ service, onServiceUpdated }: EditServicePr
       await serviceTypeService.updateServiceType(service.id, formData);
       await onServiceUpdated();
       setIsOpen(false);
-      
-      // Success toast message
       toast.success("Service updated successfully.");
     } catch (error) {
       console.error("Failed to update service:", error);
       
-      // Error toast message
+     
       toast.error("Failed to update the service. Please try again.");
     }
   };

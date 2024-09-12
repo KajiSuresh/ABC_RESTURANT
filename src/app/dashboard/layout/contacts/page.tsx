@@ -5,7 +5,7 @@ import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@
 import { Trash2 } from "lucide-react";
 import { Contact, contactService } from '@/action/contactus';
 import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css'; // Import the CSS for the toast notifications
+import 'react-toastify/dist/ReactToastify.css'; 
 
 export default function ContactDashboard() {
   const [contacts, setContacts] = useState<Contact[]>([]);
@@ -26,11 +26,11 @@ export default function ContactDashboard() {
   const handleDelete = async (id: string) => {
     try {
       await contactService.deleteContact(id);
-      fetchContacts(); // Refresh the list after deletion
-      toast.success('Contact deleted successfully!'); // Show success toast
+      fetchContacts(); 
+      toast.success('Contact deleted successfully!'); 
     } catch (error) {
       console.error(`Failed to delete contact ${id}:`, error);
-      toast.error('Failed to delete contact.'); // Show error toast
+      toast.error('Failed to delete contact.'); 
     }
   };
 
@@ -65,7 +65,7 @@ export default function ContactDashboard() {
           </TableBody>
         </Table>
       </div>
-      <ToastContainer /> {/* Add this line to render the toast notifications */}
+      <ToastContainer /> 
     </div>
   );
 }

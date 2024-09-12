@@ -5,10 +5,10 @@ import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@
 import { Trash2 } from "lucide-react"
 import AddService from "./model/add_service"
 import EditService from './model/edit_service';
-import { ServiceType, serviceTypeService } from '@/action/service'; // Adjust the import path as needed
+import { ServiceType, serviceTypeService } from '@/action/service'; 
 import Image from 'next/image';
-import { toast, ToastContainer } from 'react-toastify'; // Import React Toastify
-import 'react-toastify/dist/ReactToastify.css'; // Import styles for React Toastify
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'; 
 
 export default function Service() {
   const [services, setServices] = useState<ServiceType[]>([]);
@@ -23,29 +23,29 @@ export default function Service() {
       setServices(fetchedServices);
     } catch (error) {
       console.error("Failed to fetch services:", error);
-      toast.error("Failed to fetch services. Please try again."); // Use toast.error for error messages
+      toast.error("Failed to fetch services. Please try again."); 
     }
   };
 
   const handleEdit = (id: string) => {
     console.log(`Edit service ${id}`);
-    // Implement edit functionality
+
   }
 
   const handleDelete = async (id: string) => {
     try {
       await serviceTypeService.deleteServiceType(id);
-      fetchServices(); // Refresh the list after deletion
-      toast.success("The service has been successfully deleted."); // Use toast.success for success messages
+      fetchServices(); 
+      toast.success("The service has been successfully deleted."); 
     } catch (error) {
       console.error(`Failed to delete service ${id}:`, error);
-      toast.error("Failed to delete the service. Please try again."); // Use toast.error for error messages
+      toast.error("Failed to delete the service. Please try again."); 
     }
   }
 
   return (
     <div className="w-full p-6">
-      <ToastContainer /> {/* Add ToastContainer here */}
+      <ToastContainer />
       <div className="flex justify-between items-center">
         <div className="flex-shrink-0 text-[25px] font-semibold p-2">Services</div>
         <div className="flex justify-end mb-4 flex-shrink-0">

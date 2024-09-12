@@ -33,12 +33,12 @@ export default function AddDining({ onAdd }: { onAdd: () => Promise<void> }) {
       });
 
       console.log('New dining table created:', newDiningTable);
-      // Reset form
+      
       setName('');
       setImage(null);
-      // Call onAdd after successful submission
+   
       await onAdd();
-      // TODO: Close the dialog and possibly refresh the list of dining tables
+     
     } catch (error) {
       console.error('Failed to create dining table:', error);
       setError('Failed to create dining table. Please try again.');

@@ -53,7 +53,7 @@ export default function EditDinning({ dinning, onDinningUpdated }: EditDinningPr
         console.error('Error message:', error.message);
         console.error('Error stack:', error.stack);
       }
-      // Handle error (e.g., show error message to user)
+     
     }
   };
 

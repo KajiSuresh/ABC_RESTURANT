@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table"
 import { Trash2 } from "lucide-react"
 import Image from 'next/image';
- // Adjust this import path as needed
+
 import AddDining from "./model/add_dinning"
 import { DiningTable, diningTableService } from '@/action/dinning';
 import EditDinning from './model/edit_dinning';
@@ -33,7 +33,7 @@ export default function DiningDashboard() {
   const handleDelete = async (id: string) => {
     try {
       await diningTableService.deleteDiningTable(id);
-      fetchDiningTables(); // Refresh the list after deletion
+      fetchDiningTables();
     } catch (error) {
       console.error(`Failed to delete dining table ${id}:`, error);
     }

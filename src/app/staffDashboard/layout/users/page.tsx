@@ -28,7 +28,7 @@ export default function UserDashboard() {
   const handleDelete = async (id: string) => {
     try {
       await userService.deleteUser(id);
-      fetchUsers(); // Refresh the list after deletion
+      fetchUsers();
       toast.success("User deleted successfully.");
     } catch (error) {
       console.error(`Failed to delete user ${id}:`, error);
@@ -59,7 +59,7 @@ export default function UserDashboard() {
                 <TableCell>{user.phoneNo}</TableCell>
                 <TableCell>{user.email}</TableCell>
                 <TableCell>
-                  {/* <EditUser user={user} onEdit={fetchUsers} /> */}
+                
                   <Button variant="outline" size="icon" className="ml-2" onClick={() => handleDelete(user.id)}>
                     <Trash2 className="h-4 w-4" />
                   </Button>

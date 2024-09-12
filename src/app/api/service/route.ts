@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import prisma from "../../../lib/db_client"; // Ensure this path is correct for your Prisma client
+import prisma from "../../../lib/db_client"; 
 
 export async function GET(request: NextRequest) {
     try {
-        // Fetch all service types from the database
+        
         const serviceTypes = await prisma.serviceType.findMany();
 
-        // Return the service types as a JSON response
+        
         return NextResponse.json({ serviceTypes }, { status: 200 });
     } catch (error) {
         console.error("Failed to fetch service types:", error);

@@ -40,7 +40,7 @@ class LoginManager {
         toast.success('Admin login successful!'); // Success toast for admin login
       } else {
         await this.staffUserLogin(email, password, router); 
-        // Check if it's a staff login
+        
       }
     } catch (error) {
       toast.error('Login failed. Please check your credentials.');
@@ -54,8 +54,8 @@ class LoginManager {
 
   private async staffUserLogin(email: string, password: string, router: any): Promise<void> {
     try {
-      const staff = await staffService.getStaffByEmail(email, password); // Fetch staff by email
-      console.log('Fetched staff:', staff); // Add this line to debug
+      const staff = await staffService.getStaffByEmail(email, password); 
+      console.log('Fetched staff:', staff);
       if (!staff || staff.password !== password || staff.role !== 'STAFF') {
         throw new Error('Invalid credentials');
       }

@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import prisma from "@/lib/db_client"; // Make sure this path is correct for your Prisma client
+import prisma from "@/lib/db_client"; 
 
 export async function GET(request: NextRequest) {
     try {
-        // Fetch all staff members from the database
+     
         const staff = await prisma.staffType.findMany({
             select: {
                 id: true,
@@ -14,11 +14,11 @@ export async function GET(request: NextRequest) {
                 role: true,
                 createdAt: true,
                 updatedAt: true,
-                // Note: We're not selecting the password field for security reasons
+                
             }
         });
 
-        // Return the staff members as a JSON response
+        
         return NextResponse.json({ staff }, { status: 200 });
     } catch (error) {
         console.error("Failed to fetch staff:", error);
@@ -40,13 +40,13 @@ export async function POST(request: NextRequest) {
                 staffname,
                 email,
                 phone,
-                password, // Note: storing password as plain text
+                password, 
                 position,
                 role,
             },
         });
 
-        // Return the new staff member without the password
+       
         const { password: _, ...staffWithoutPassword } = newStaff;
         return NextResponse.json({ staff: staffWithoutPassword }, { status: 201 });
     } catch (error) {
@@ -107,7 +107,7 @@ export async function PUT(request: NextRequest) {
             },
         });
 
-        // Return the updated staff member without the password
+       
         const { password: _, ...staffWithoutPassword } = updatedStaff;
         return NextResponse.json({ staff: staffWithoutPassword }, { status: 200 });
     } catch (error) {

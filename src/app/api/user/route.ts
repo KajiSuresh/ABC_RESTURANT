@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import prisma from "../../../lib/db_client"; // Make sure this path is correct for your Prisma client
+import prisma from "../../../lib/db_client"; 
 
 export async function GET(request: NextRequest) {
     try {
@@ -12,11 +12,11 @@ export async function GET(request: NextRequest) {
                 name: true,
                 createdAt: true,
                 updatedAt: true,
-                // Note: We're not selecting the password field for security reasons
+               
             }
         });
 
-        // Return the users as a JSON response
+      
         return NextResponse.json({ users }, { status: 200 });
     } catch (error) {
         console.error("Failed to fetch users:", error);
@@ -36,13 +36,13 @@ export async function POST(request: NextRequest) {
         const newUser = await prisma.user.create({
             data: {
                 email,
-                password, // Note: In a real-world scenario, you should hash this password before storing
+                password, 
                 phoneNo,
                 name,
             },
         });
 
-        // Return the new user without the password
+       
         const { password: _, ...userWithoutPassword } = newUser;
         return NextResponse.json({ user: userWithoutPassword }, { status: 201 });
     } catch (error) {
@@ -95,13 +95,13 @@ export async function PUT(request: NextRequest) {
             where: { id },
             data: {
                 email,
-                password, // Note: In a real-world scenario, you should hash this password before storing
+                password, 
                 phoneNo,
                 name,
             },
         });
 
-        // Return the updated user without the password
+      
         const { password: _, ...userWithoutPassword } = updatedUser;
         return NextResponse.json({ user: userWithoutPassword }, { status: 200 });
     } catch (error) {

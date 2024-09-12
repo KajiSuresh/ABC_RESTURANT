@@ -40,7 +40,7 @@ export default function AddService({ onServiceAdded }: AddServiceProps) {
         description: description,
       });
       
-      // Reset form and close dialog on success
+      
       setServiceName('');
       setImage(null);
       setDescription('');

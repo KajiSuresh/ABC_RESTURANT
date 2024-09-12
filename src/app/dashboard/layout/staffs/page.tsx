@@ -29,7 +29,7 @@ export default function StaffDashboard() {
   const handleDelete = async (id: string) => {
     try {
       await staffService.deleteStaff(id);
-      fetchStaff(); // Refresh the list after deletion
+      fetchStaff();
       toast.success('Staff member deleted successfully');
     } catch (error) {
       console.error(`Failed to delete staff member ${id}:`, error);
@@ -46,7 +46,7 @@ export default function StaffDashboard() {
   };
 
   const handleSave = () => {
-    fetchStaff(); // Refresh staff list after saving changes
+    fetchStaff(); 
   };
 
   return (

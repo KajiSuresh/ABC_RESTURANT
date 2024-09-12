@@ -3,10 +3,10 @@ import prisma from "../../../lib/db_client";
 
 export async function GET(request: NextRequest) {
   try {
-    // Fetch all reservations from the database
+    
     const reservations = await prisma.reservation.findMany();
 
-    // Return the reservations as JSON
+    
     return NextResponse.json({ reservations }, { status: 200 });
   } catch (error) {
     console.error("Failed to fetch reservations:", error);
